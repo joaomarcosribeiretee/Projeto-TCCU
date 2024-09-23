@@ -1,198 +1,87 @@
-/* Estilos globais */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
     font-family: Arial, sans-serif;
-    line-height: 1.6;
-    background-color: #9bcf63; /* Alterei o fundo para branco */
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
 }
 
-/* Primeiro header (logo, barra de pesquisa, ícones) */
-.top-header {
-    background-color: #ffffff;
-    padding: 0.5rem 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: visible; /* Permite que o conteúdo ultrapasse a altura */
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
 }
 
-.top-header nav {
+header nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 85%;
-    max-height: 100px; /* Define a altura máxima do header */
+    padding: 0 20px;
 }
 
-.top-header .logo {
-    position: relative; /* Permite ajustar o tamanho da logo sem afetar o header */
+header .logo img {
+    height: 40px;
 }
 
-.top-header .logo img {
-    height: 150px; /* Aumenta o tamanho da logo */
-    width: auto;
-    position: relative;
-    z-index: 1; /* Garante que a logo seja visível por cima de outros elementos */
-}
-
-.search-bar {
-    flex-grow: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: 20px;
-}
-
-.search-bar input {
-    width: 100%;
-    max-width: 600px; /* Tamanho da barra de pesquisa ajustado */
-    padding: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1rem;
-}
-
-.search-bar button {
-    background-color: #9bcf63; /* Botão de pesquisa com cor verde */
-    border: none;
-    padding: 1rem 1rem;
-    margin-left: -45px;
-    cursor: pointer;
-    font-size: 1rem;
-    border-radius: 0 4px 4px 0;
-}
-
-.search-bar button i {
+header .header-buttons button {
+    background-color: #555;
     color: white;
-}
-
-.header-icons {
-    display: flex;
-    align-items: center;
-}
-
-.header-icons a {
-    text-decoration: none;
-    color: #333;
-    font-weight: bold;
-    margin-left: 1.5rem;
-}
-
-.header-icons .cart i {
-    font-size: 1.5rem;
-    color: #9bcf63; /* Ícone do carrinho com verde */
-}
-
-/* Linha de separação entre os dois headers */
-.separator-line {
-    width: 100%;
-    border-top: 1px solid #ccc; /* Borda superior leve e cinza clara */
-    background-color: #ffffff; /* Fundo branco para remover o verde */
-    height: 1px; /* Ajuste a altura da linha */
-    margin: 0; /* Remove qualquer margem extra */
-    padding: 0;
-}
-
-
-/* Segundo header (menu de navegação) */
-.menu-header {
-    background-color: #ffffff; /* Fundo branco para o menu header */
-    padding: 0.5rem 0; /* Diminuído o padding */
-}
-
-.menu-header .menu {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-}
-
-.menu-header .menu li {
-    margin-left: 1.5rem;
-}
-
-.menu-header .menu li a {
-    color: #9bcf63; /* Cor verde para os links de navegação */
-    text-decoration: none;
-    font-weight: bold;
-}
-
-/* Hero Section */
-.hero {
-    background-image: url('hero-bg.jpg');
-    background-size: cover;
-    background-position: center;
-    color: #fff;
-    height: 70vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-.hero-content h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-}
-
-.hero-content p {
-    font-size: 1.5rem;
-    margin-bottom: 2rem;
-}
-
-.cta {
-    padding: 0.75rem 1.5rem;
-    background-color: #ff6f61;
-    color: #fff;
-    text-decoration: none;
-    font-weight: bold;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
     border-radius: 5px;
 }
 
-.cta:hover {
-    background-color: #ff4f3a;
+header .header-buttons button:hover {
+    background-color: #777;
 }
 
-/* Grid de produtos */
-.products {
-    padding: 2rem 0;
+section {
+    margin: 20px;
+}
+
+h2 {
     text-align: center;
-}
-
-.products h2 {
-    font-size: 2rem;
-    margin-bottom: 1.5rem;
 }
 
 .product-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
-    width: 90%;
-    margin: 0 auto;
+    gap: 20px;
+    margin-top: 20px;
 }
 
 .product-item {
-    background-color: #f4f4f4;
-    padding: 1rem;
-    border-radius: 10px;
-}
-
-.product-item img {
-    width: 100%;
-    height: auto;
-    border-radius: 10px;
-}
-
-/* Footer */
-footer {
-    background-color: #333;
-    color: #fff;
+    background-color: white;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
     text-align: center;
-    padding: 1rem 0;
-    margin-top: 2rem;
+}
+
+input, button {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    background-color: #333;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #555;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    background-color: #333;
+    color: white;
+    margin-top: 20px;
 }

@@ -3,15 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Marketplace de Produtos Tecnológicos</title>
-    <link rel="stylesheet" href="/view/styles.css">
+    <title>TechMarket - Gerenciamento de Produtos</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header class="top-header">
-        <!-- Conteúdo do header -->
+        <nav>
+            <div class="logo">
+                <img src="view/logo.png" alt="Logo do TechMarket">
+            </div>
+            <!-- Botão único para alternar entre as seções -->
+            <div class="header-buttons">
+                <button id="toggleButton" onclick="toggleSection()">Sou Vendedor</button>
+            </div>
+        </nav>
     </header>
 
-    <section class="products">
+    <!-- Seção de Busca de Produtos -->
+    <section id="search-section" class="section">
+        <h2>Buscar Produto</h2>
+        <input type="text" id="searchInput" placeholder="Digite o nome do produto">
+        <button onclick="searchProducts()">Buscar</button>
+
+        <h2>Resultados da Busca</h2>
+        <div class="product-grid" id="productGrid"></div>
+    </section>
+
+    <!-- Seção de Inserção de Produtos -->
+    <section id="insert-section" class="section" style="display:none;">
         <h2>Inserir Produto</h2>
         <form id="productForm">
             <input type="text" id="nome" placeholder="Nome do Produto" required>
@@ -20,11 +39,7 @@
             <input type="number" id="estoque" placeholder="Estoque" required>
             <button type="submit">Inserir Produto</button>
         </form>
-        <h2>Buscar Produto</h2>
-        <input type="text" id="searchInput" placeholder="Digite o nome do produto">
-        <button onclick="searchProducts()">Buscar</button>
-        <h2>Nossos Produtos</h2>
-        <div class="product-grid" id="productGrid"></div>
+        <p id="message"></p>
     </section>
 
     <footer>
@@ -32,25 +47,56 @@
     </footer>
 
     <script>
-        // Função para buscar e exibir produtos
-        async function fetchProducts() {
+        // Variável de estado para alternar entre cliente (busca) e vendedor (inserção)
+        let isVendor = false;
+
+        // Função para alternar entre as seções
+        function toggleSection() {
+            const searchSection = document.getElementById('search-section');
+            const insertSection = document.getElementById('insert-section');
+            const toggleButton = document.getElementById('toggleButton');
+
+            if (isVendor) {
+                // Se for vendedor, mostramos a seção de busca e trocamos o botão
+                searchSection.style.display = 'block';
+                insertSection.style.display = 'none';
+                toggleButton.innerText = 'Sou Vendedor';
+            } else {
+                // Se for cliente, mostramos a seção de inserção e trocamos o botão
+                searchSection.style.display = 'none';
+                insertSection.style.display = 'block';
+                toggleButton.innerText = 'Sou Cliente';
+            }
+
+            // Alterna o estado
+            isVendor = !isVendor;
+        }
+
+        // Função para buscar produtos com base no nome
+        async function searchProducts() {
+            const searchQuery = document.getElementById('searchInput').value;
+
             try {
-                const response = await fetch('http://localhost:3000/api/produtos');
+                const response = await fetch(`http://localhost:3000/api/produtos/search?nome=${searchQuery}`);
                 const products = await response.json();
                 const productGrid = document.getElementById('productGrid');
                 productGrid.innerHTML = '';
 
-                products.forEach(product => {
-                    const productItem = document.createElement('div');
-                    productItem.className = 'product-item';
-                    productItem.innerHTML = `
-                        <h3>${product.nome}</h3>
-                        <p>${product.descricao}</p>
-                        <p>Preço: R$ ${product.preco.toFixed(2)}</p>
-                        <p>Estoque: ${product.estoque}</p>
-                    `;
-                    productGrid.appendChild(productItem);
-                });
+                if (products.length === 0) {
+                    productGrid.innerHTML = '<p>Nenhum produto encontrado.</p>';
+                } else {
+                    products.forEach(product => {
+                        const productItem = document.createElement('div');
+                        productItem.className = 'product-item';
+                        productItem.innerHTML = `
+                            <h3>${product.nome}</h3>
+                            <p>${product.descricao}</p>
+                            <p>Preço: R$ ${product.preco.toFixed(2)}</p>
+                            <p>Estoque: ${product.estoque}</p>
+                        `;
+                        productGrid.appendChild(productItem);
+                    });
+                }
             } catch (error) {
                 console.error('Erro ao buscar produtos:', error);
             }
@@ -74,141 +120,23 @@
                     body: JSON.stringify({ nome, descricao, preco, estoque }),
                 });
 
+                const messageEl = document.getElementById('message');
                 if (response.ok) {
-                    alert('Produto inserido com sucesso!');
+                    messageEl.innerText = 'Produto inserido com sucesso!';
+                    messageEl.style.color = 'green';
                     document.getElementById('productForm').reset();
-                    fetchProducts(); // Atualiza a lista de produtos
                 } else {
-                    alert('Erro ao inserir produto');
+                    messageEl.innerText = 'Erro ao inserir produto';
+                    messageEl.style.color = 'red';
                 }
             } catch (error) {
                 console.error('Erro ao inserir produto:', error);
             }
         }
 
-        // Event listener para o formulário
+        // Event listener para o formulário de inserção
         document.getElementById('productForm').addEventListener('submit', insertProduct);
 
-        // Buscar produtos ao carregar a página
-        fetchProducts();
     </script>
-
-    <script>
-    // Função para buscar produtos com base no nome
-    async function searchProducts() {
-        const searchQuery = document.getElementById('searchInput').value; // Pega o valor do campo de busca
-
-        try {
-            // Faz a requisição GET com o nome do produto para buscar
-            const response = await fetch(`http://localhost:3000/api/produtos/search?nome=${searchQuery}`);
-            const products = await response.json();
-            const productGrid = document.getElementById('productGrid');
-            productGrid.innerHTML = ''; // Limpa a lista de produtos anterior
-
-            if (products.length === 0) {
-                productGrid.innerHTML = '<p>Nenhum produto encontrado.</p>'; // Mostra mensagem se não encontrar nada
-            } else {
-                // Percorre a lista de produtos e cria elementos HTML para exibi-los
-                products.forEach(product => {
-                    const productItem = document.createElement('div');
-                    productItem.className = 'product-item';
-                    productItem.innerHTML = `
-                        <h3>${product.nome}</h3>
-                        <p>${product.descricao}</p>
-                        <p>Preço: R$ ${product.preco.toFixed(2)}</p>
-                        <p>Estoque: ${product.estoque}</p>
-                    `;
-                    productGrid.appendChild(productItem);
-                });
-            }
-        } catch (error) {
-            console.error('Erro ao buscar produtos:', error);
-        }
-    }
-
-    // Função para buscar e exibir todos os produtos ao carregar a página
-    async function fetchProducts() {
-        try {
-            const response = await fetch('http://localhost:3000/api/produtos');
-            const products = await response.json();
-            const productGrid = document.getElementById('productGrid');
-            productGrid.innerHTML = ''; // Limpa o grid de produtos
-
-            products.forEach(product => {
-                const productItem = document.createElement('div');
-                productItem.className = 'product-item';
-                productItem.innerHTML = `
-                    <h3>${product.nome}</h3>
-                    <p>${product.descricao}</p>
-                    <p>Preço: R$ ${product.preco.toFixed(2)}</p>
-                    <p>Estoque: ${product.estoque}</p>
-                `;
-                productGrid.appendChild(productItem);
-            });
-        } catch (error) {
-            console.error('Erro ao buscar produtos:', error);
-        }
-    }
-
-        // Função para buscar produtos com base no nome
-        async function searchProducts() {
-        const searchQuery = document.getElementById('searchInput').value; // Pega o valor do campo de busca
-
-        try {
-            // Faz a requisição GET com o nome do produto para buscar
-            const response = await fetch(`http://localhost:3000/api/produtos/search?nome=${searchQuery}`);
-            const products = await response.json();
-            const productGrid = document.getElementById('productGrid');
-            productGrid.innerHTML = ''; // Limpa a lista de produtos anterior
-
-            if (products.length === 0) {
-                productGrid.innerHTML = '<p>Nenhum produto encontrado.</p>'; // Mostra mensagem se não encontrar nada
-            } else {
-                // Percorre a lista de produtos e cria elementos HTML para exibi-los
-                products.forEach(product => {
-                    const productItem = document.createElement('div');
-                    productItem.className = 'product-item';
-                    productItem.innerHTML = `
-                        <h3>${product.nome}</h3>
-                        <p>${product.descricao}</p>
-                        <p>Preço: R$ ${product.preco.toFixed(2)}</p>
-                        <p>Estoque: ${product.estoque}</p>
-                    `;
-                    productGrid.appendChild(productItem);
-                });
-            }
-        } catch (error) {
-            console.error('Erro ao buscar produtos:', error);
-        }
-    }
-
-    // Função para buscar e exibir todos os produtos ao carregar a página
-    async function fetchProducts() {
-        try {
-            const response = await fetch('http://localhost:3000/api/produtos');
-            const products = await response.json();
-            const productGrid = document.getElementById('productGrid');
-            productGrid.innerHTML = ''; // Limpa o grid de produtos
-
-            products.forEach(product => {
-                const productItem = document.createElement('div');
-                productItem.className = 'product-item';
-                productItem.innerHTML = `
-                    <h3>${product.nome}</h3>
-                    <p>${product.descricao}</p>
-                    <p>Preço: R$ ${product.preco.toFixed(2)}</p>
-                    <p>Estoque: ${product.estoque}</p>
-                `;
-                productGrid.appendChild(productItem);
-            });
-        } catch (error) {
-            console.error('Erro ao buscar produtos:', error);
-        }
-    }
-
-    // Busca todos os produtos ao carregar a página
-    fetchProducts();
-</script>
-
 </body>
 </html>
